@@ -1,2 +1,0 @@
-## [Index] (Index)
-## [Design] (Design)
