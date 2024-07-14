@@ -1,0 +1,43 @@
+name: "Wiki update"
+
+# When changes to /docs are pushed to main
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+  repository_dispatch:
+      types: [docs]
+  gollum:
+
+jobs:
+  job-sync-docs-to-wiki:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'gollum'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Bi-directional Wiki Sync Action
+        uses: newrelic/wiki-sync-action@v1.0.1
+        with:
+          source: docs
+          destination: wiki
+          token: ${{ secrets.WIKI_UPDATE }}
+
+  job-sync-wiki-to-docs:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'gollum'
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WIKI_UPDATE }}
+          ref: main
+      - name: Sync Wiki to Docs
+        uses: newrelic/wiki-sync-action@v1.0.1
+        with:
+          source: wiki
+          destination: docs
+          token: ${{ secrets.WIKI_UPDATE }}
+          branch: main
