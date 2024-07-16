@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 psycopg2 = "^2.9.9"
 flask = "^3.0.3"
+hvac = "^2.3.0"
 
 
 [build-system]
