@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-
+        <meta charset="UTF-8">
+        <title>{% block title %} {% endblock %} Eucalypto</title>
+    
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
     </head>
 
     <body>
-        
+        <div class="page-header"></div>
+        <nav>
+            <div class="account-login-bar">
+                <a href="{{ url_for('login_page') }}">Log in</a>
+            </div>
+            <ul>
+                <li>Species List</li>
+                <li>Spaces</li>
+            </ul>
+        </nav>
     </body>
 </html>
