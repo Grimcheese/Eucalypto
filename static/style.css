@@ -1,0 +1,15 @@
+li.side-by-side{
+    float: left;
+    margin-left: 10px;
+}
+
+ul {
+    list-style-type: none; /* Remove bullets */
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    margin: auto;
+    width: 60%;
+}
