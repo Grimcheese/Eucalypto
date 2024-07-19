@@ -12,7 +12,10 @@
         <header>
             <div class="account-login-bar">
                 {% if session['logged_in'] %}
-                <a href="">Sign Out</a>
+                <form action="{{ url_for('sign_out')}}" method="post">
+                    <button type="submit" name="sign_out" value="sign_out" class="btn-link">Sign Out</button>
+                </form>
+                
                 {% else -%}
                 <a href="{{ url_for('login_page') }}">Log in</a>
                 {% endif %}
