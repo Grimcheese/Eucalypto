@@ -17,7 +17,7 @@
                 </form>
                 
                 {% else -%}
-                <a href="{{ url_for('login_page') }}">Log in</a>
+                <a href="{{ url_for('login_page') }}">Log in</a> | <a href="{{url_for('signup_page') }}">Sign Up</a>
                 {% endif %}
             </div>
 
@@ -27,9 +27,9 @@
 
             <nav>
                 <ul>
-                    <li class="side-by-side">Home Page</li>
-                    <li class="side-by-side">Species List</li>
-                    <li class="side-by-side">Spaces</li>
+                    <li class="side-by-side"><a href="{{url_for('home_page') }}">Home Page</a></li>
+                    <li class="side-by-side"><a href="{{url_for('species_page') }}">Species List</a></li>
+                    <li class="side-by-side"><a href="{{url_for('spaces_page') }}">Spaces</a></li>
                 </ul>
             </nav>
         </header>
