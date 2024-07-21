@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} {{plant_info['genus'] | title}} {{plant_info['species']}} {% endblock %}
+
+{% block page_content %}
+
+    {% if plant_info['valid'] == True %}
+        <h1>{{plant_info['genus'] | title}} {{plant_info['species']}}</h1>
+        <h4>Plant sub title here</h4>
+
+        <div>
+            <span>Family: {{plant_info['family']}}</span> 
+            <span>Genus: {{plant_info['genus']}}</span>
+            <span>Species: {{plant_info['species']}}</span>
+        </div>
+    {% else -%}
+        <h1>Plant not found</h1>
+        <p>Unable to find the plant page you were looking for. {{plant_info['genus'] | title}} {{plant_info['species']}} does not exist in this database.</p>
+    {% endif %}
+
+{% endblock %}

@@ -37,17 +37,36 @@ def sign_out():
     session['logged_in'] = False
     return redirect(url_for('home_page'))
 
+
 @app.route('/species/')
 def species_page():
+    # TODO get species list
     return render_template("species_list.html")
+
+
+@app.route('/species/<genus>/<species>')
+def generic_plant(genus, species):
+    # Very genus and species is in plant list
+    # Get info from genus and species in database
+    plant_info = {
+        'valid' : True,
+        'family' : "test_fam",
+        'genus' : genus,
+        'species' : species
+    }
+    return render_template("generic_plant_page.html", plant_info=plant_info) #Add plant data to render template function call
+
 
 @app.route("/spaces/")
 def spaces_page():
     return render_template("spaces.html")
 
+
 @app.route('/signup')
 def signup_page():
     return render_template("signup.html")
+
+
 
 
 if __name__ == "__main__":
