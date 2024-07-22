@@ -21,14 +21,14 @@ def login_page():
         if session['logged_in']:
             return redirect(url_for('home_page'))
         else:
-            return render_template("login.html")
+            return render_template("login.html", login_error=False)
     if request.method == 'POST':
         if request.form['username'] == "user" and request.form['password'] == "password":
             session['logged_in'] = True
             return redirect(url_for('home_page'))
         else:
             # Print user name/password error
-            return render_template('login.html')
+            return render_template('login.html', login_error=True)
     
 
 @app.route('/signout', methods = ['POST'])
