@@ -5,14 +5,17 @@
 {% block page_content %} 
 
     {% if session['logged_in'] %}
+
     <h1>Your spaces</h1>
+
     <ul>
-        <li>Space 1...</li>
-        <li>Space 2...</li>
+        {% for name, url in spaces.items() %}
+        <li><a href="{{url}}">{{name}}</a></li>
+        {% endfor %}
     </ul>
     {% else -%}
     <h1>Not signed in</h1>
     <p>To view your spaces your must be signed in!</p>
     {% endif %}
-    
+
 {% endblock %}
