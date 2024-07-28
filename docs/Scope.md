@@ -6,6 +6,7 @@ Plants are the core feature of the Eucalypto database.
 
 The database should maintain a complete species list of all plants that have been added to the database as well as a list of actual plants that users have added to each space. Generic plants (in the species list) can be added by users if the species is not yet listed in the database. 
 
+#### Generic Plants
 Generic plant information can include:
 - family name
 - genus
@@ -18,12 +19,19 @@ Generic plant information can include:
 - flowering times
 - type photo
 
+Users can add a species to the website database. When adding a new species, only the name needs to be initially uploaded
+and all other details can be updated at a later date. (Functionality to work on, moderation by admin?)
+
+#### Actual Plants
+
 Actual plant information can include:
 - Plant species
 - Date planted
 - Current dimensions
 - Ongoing log of observations
 - Current photo
+
+#### Plant Observations
 
 Plant observations can include:
 - Is the plant flowering?
@@ -32,6 +40,7 @@ Plant observations can include:
 - Any pests or diseases found
 - New dimensions
 - Any wildlife found 
+
 
 ### Spaces
 Spaces are a core concept of Eucalypto that allows for having multiple places tracked and monitored. Essentially a space is a single, relatively small area that is grouped into one place. For example, a space could be your backyard while another space could be inside the house to track indoor plants. Spaces should have a name and a GPS coordinate. Spaces are only viewable by users that have been granted permission by the creator of that space, update permissions can also be granted.
@@ -55,6 +64,7 @@ Pages to be created include:
 - Make observation page
 
 The website will be created using Flask from the Python programming language as it is lightweight, configurable and works well with databases.
+
 ### Database
 The database needs to store a list of generic plants and all the information that users upload about actual plants that exist in spaces. It will also be required to store user data and track user permissions for spaces. The information that needs to be stored in the database has been listed in the previous outlines and more thorough analysis will be conducted as part of development of the database.
 
