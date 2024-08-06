@@ -10,7 +10,7 @@ steps:
 - name: set-env
   image: alpine
   commands:
-  - echo ${DB_NAME}
+  - echo ${{DB_NAME}}
   environment:
     DB_NAME:
       from_secret: db_name
