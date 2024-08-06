@@ -10,4 +10,4 @@ steps:
 - name: greeting
   image: alpine
   commands:
-  - echo hello thar more changes
+  - echo hello thar more 
