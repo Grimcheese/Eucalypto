@@ -15,7 +15,7 @@ steps:
   commands:
   - echo $DB_NAME
 
-  ---
+---
 kind: secret
 name: db_name
 get:
