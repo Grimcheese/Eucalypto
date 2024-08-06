@@ -9,5 +9,15 @@ trigger:
 steps:
 - name: greeting
   image: alpine
+  environment:
+    DB_NAME:
+      from_secret: db_name
   commands:
-  - echo hello thar more 
+  - echo $DB_NAME
+
+  ---
+  kind: secret
+  name: db_name
+  get:
+    path: kv-v2/eucalypto
+    name: db_name
