@@ -11,4 +11,3 @@ steps:
   image: alpine
   commands:
   - echo hello  world
-  - echo please work
