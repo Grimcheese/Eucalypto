@@ -7,7 +7,7 @@ trigger:
     - push
 
 steps:
-- name: greeting
+- name: set-env
   image: alpine
   environment:
     DB_NAME:
@@ -16,8 +16,8 @@ steps:
   - echo $DB_NAME
 
   ---
-  kind: secret
+kind: secret
+name: db_name
+get:
+  path: kv-v2/eucalypto
   name: db_name
-  get:
-    path: kv-v2/eucalypto
-    name: db_name
