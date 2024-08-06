@@ -20,5 +20,5 @@ steps:
 kind: secret
 name: db_name
 get:
-  path: /secret/eucalypto
+  path: kv-v2/eucalypto
   name: db_name
