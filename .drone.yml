@@ -54,10 +54,14 @@ steps:
 - name: Sync to stage server
   image: appleboy/drone-scp
   settings:
-    host: $DEV_SERVER
-    username: $DEV_SERVER_USER 
-    key: $DEV_SERVER_KEY
-    target: $DEV_SERVER_PATH
+    host: 
+      from_secret: dev-server
+    username: 
+      from_secret: dev-server-user 
+    key: 
+      from_secret: dev-server-key
+    target: 
+      from_secret: dev-server-path
     source: ./dist/*
     overwrite: true
   environment:
