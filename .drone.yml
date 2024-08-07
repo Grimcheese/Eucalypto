@@ -56,7 +56,7 @@ steps:
   settings:
     host: $DEV_SERVER
     username: $DEV_SERVER_USER 
-    ssh-key: $DEV_SERVER_KEY
+    key: $DEV_SERVER_KEY
     target: $DEV_SERVER_PATH
     source: ./dist/*
     overwrite: true
