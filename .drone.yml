@@ -54,7 +54,7 @@ steps:
 - name: Sync to stage server
   image: debian
   commands:
-    - sudo apt-get install openssh-client rsync
+    - apt-get install openssh-client rsync
     - echo $DEV-SERVER-KEY >> ~/.ssh/id_rsa
     - echo "Host *ntStrictHostKeyChecking no" >> ~/.ssh/config
     - rsync ./dist $DEV-SERVER-USER@$DEV-SERVER:$DEV-SERVER-PATH
