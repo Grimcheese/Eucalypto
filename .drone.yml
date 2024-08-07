@@ -15,6 +15,8 @@ steps:
   commands:
   - poetry install
   - poetry build
+  - pwd
+  - ls
   environment:
     DB_NAME:
       from_secret: db_name
