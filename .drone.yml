@@ -11,9 +11,21 @@ trigger:
 
 steps:
 - name: 
-  image: debian:12.6
+  image: dghcr.io/withlogicco/poetry:1.8.3
   commands:
-  - 
+  - poetry install
+  - poetry build
+  
+---
+kind: pipeline
+type: docker
+name: "Server Test Stage"
+
+trigger:
+  branch:
+    - main
+  event:
+
   environment:
     DB_NAME:
       from_secret: db_name
