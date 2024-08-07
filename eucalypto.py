@@ -12,6 +12,7 @@ test_password = "password"
 
 @app.route('/')
 def home_page():
+    session['logged_in'] = False
     return render_template("home.html")
 
 
@@ -50,7 +51,7 @@ def generic_plant(genus, species):
 
     # Get info from genus and species in database
     plant_info = {
-        'valid' : True,
+        'valid' : False,
         'family' : "test_fam",
         'genus' : genus,
         'species' : species
