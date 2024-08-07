@@ -25,6 +25,8 @@ trigger:
   branch:
     - main
   event:
+    include:
+      - push
 
   environment:
     DB_NAME:
@@ -49,7 +51,8 @@ get:
   path: kv-v2/data/eucalypto
   name: username
 
---- kind: secret
+--- 
+kind: secret
 name: password
 get:
   path: kv-v2/data/eucalypto
