@@ -11,7 +11,7 @@ trigger:
 
 steps:
 - name: Build Env
-  image: dghcr.io/withlogicco/poetry:1.8.3
+  image: pfeiffermax/python-poetry
   commands:
   - poetry install
   - poetry build
@@ -37,7 +37,7 @@ trigger:
 
 steps:
 - name: Build Env
-  image: dghcr.io/withlogicco/poetry:1.8.3
+  image: pfeiffermax/python-poetry
   commands:
     - poetry install
     - poetry build
