@@ -10,10 +10,11 @@ trigger:
       - push
 
 steps:
-- name: 
-  image: debian:12.6
+- name: Build Env
+  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
-  - 
+  - poetry install
+  - poetry build
   environment:
     DB_NAME:
       from_secret: db_name
@@ -22,23 +23,90 @@ steps:
     DB_PASSWORD:
       from_secret: password
   
+---
+kind: pipeline
+type: docker
+name: "Server Test Stage"
+
+trigger:
+  branch:
+    - main
+  event:
+    include:
+      - push
+
+steps:
+- name: Build Env
+  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+  commands:
+    - poetry install
+    - poetry build
+  environment:
+    DB_NAME:
+      from_secret: db_name
+    DB_USERNAME:
+      from_secret: username
+    DB_PASSWORD:
+      from_secret: password
+- name: Wheel Sync
+  image: drillster/drone-rsync
+  settings:
+    hosts: 
+      from_secret: dev-server
+    user:
+      from_secret: dev-server-user
+    key:
+      from_secret: dev-server-key
+    source: ./
+    target: 
+      from_secret: dev-server-path
+    include: ["*.whl"]
+
+---
+kind: secret
+name: dev-server
+get:
+  path: kv-v2/data/eucalypto/dev-stage
+  name: server-address
+
+---
+kind: secret
+name: dev-server-path
+get:
+  path: kv-v2/data/eucalypto/dev-stage
+  name: target-path
+
+---
+kind: secret
+name: dev-server-user
+get:
+  path: kv-v2/data/eucalypto/dev-stage
+  name: dev-server-user
+
+---
+kind: secret
+name: dev-server-key
+get:
+  path: kv-v2/data/eucalypto/dev-stage
+  name: dev-server-key
 
 ---
 kind: secret
 name: db_name
 get:
-  path: kv-v2/data/eucalypto
+  path: kv-v2/data/eucalypto/db-info
   name: db_name
 
 ---
 kind: secret
 name: username
 get:
-  path: kv-v2/data/eucalypto
-  name: username
+  path: kv-v2/data/eucalypto/db-info
+  name: db_username
 
---- kind: secret
+--- 
+kind: secret
 name: password
 get:
-  path: kv-v2/data/eucalypto
-  name: password
+  path: kv-v2/data/eucalypto/db-info
+  name: db_password
