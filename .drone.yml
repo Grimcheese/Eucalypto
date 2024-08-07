@@ -43,7 +43,6 @@ steps:
   commands:
     - poetry install
     - poetry build
-    - apt-get install rsync
   environment:
     DB_NAME:
       from_secret: db_name
@@ -55,7 +54,9 @@ steps:
 - name: Sync to stage server
   image: debian
   commands:
-    - apt-get install rsync
+    - sudo apt-get install openssh-client rsync
+    - echo $DEV-SERVER-KEY >> ~/.ssh/id_rsa
+    - echo "Host *ntStrictHostKeyChecking no" >> ~/.ssh/config
     - rsync ./dist $DEV-SERVER-USER@$DEV-SERVER:$DEV-SERVER-PATH
   environment:
     DEV-SERVER:
