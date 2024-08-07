@@ -15,6 +15,8 @@ steps:
   commands:
   - poetry install
   - poetry build
+  - pwd
+  - ls -R
   environment:
     DB_NAME:
       from_secret: db_name
@@ -57,10 +59,9 @@ steps:
       from_secret: dev-server-user
     key:
       from_secret: dev-server-key
-    source: ./
+    source: ./dist
     target: 
       from_secret: dev-server-path
-    include: ["*.whl"]
 
 ---
 kind: secret
