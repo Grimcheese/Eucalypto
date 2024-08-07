@@ -55,9 +55,8 @@ steps:
   image: appleboy/drone-scp
   settings:
     host: ${DEV_SERVER}
-    username: ${DEV_SERVER_USER}
-    password: 
-    key: ${DEV_SERVER_KEY}
+    username: ${DEV_SERVER_USER} 
+    ssh_key: ${DEV_SERVER_KEY}
     target: ${DEV_SERVER_PATH}
     source: ./dist/*
     overwrite: true
