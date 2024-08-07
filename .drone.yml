@@ -44,7 +44,6 @@ steps:
     - poetry install
     - poetry build
     - apt-get install rsync
-    - rsync ./dist $
   environment:
     DB_NAME:
       from_secret: db_name
