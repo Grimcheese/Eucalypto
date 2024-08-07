@@ -52,13 +52,16 @@ steps:
       from_secret: password
     
 - name: Sync to stage server
-  image: debian
+  image: appleboy/drone-scp
   commands:
-    - apt update & apt upgrade
-    - apt-get install openssh-client rsync
-    - echo $DEV-SERVER-KEY >> ~/.ssh/id_rsa
-    - echo "Host *ntStrictHostKeyChecking no" >> ~/.ssh/config
-    - rsync ./dist $DEV-SERVER-USER@$DEV-SERVER:$DEV-SERVER-PATH
+    - ls -R
+  settings:
+    host: $DEV-SERVER
+    username: $DEV-SERVER-USER
+    key: $DEV-SERVER-KEY
+    target: $DEV-SERVER-PATH
+    source: ./dist/*
+    overwrite: true
   environment:
     DEV-SERVER:
       from_secret: dev-server
