@@ -38,11 +38,13 @@ trigger:
       - push
 
 steps:
-- name: Build Env
+- name: Build
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
     - poetry install
     - poetry build
+    - apt-get install rsync
+    - rsync ./dist $
   environment:
     DB_NAME:
       from_secret: db_name
@@ -50,18 +52,21 @@ steps:
       from_secret: username
     DB_PASSWORD:
       from_secret: password
-- name: Wheel Sync
-  image: drillster/drone-rsync
-  settings:
-    hosts: 
+    
+- name: Sync to stage server
+  image: debian
+  commands:
+    - apt-get install rsync
+    - rsync ./dist ${DEV-SERVER-USER}@${DEV-SERVER}:${DEV-SERVER-PATH}
+  environment:
+    DEV-SERVER:
       from_secret: dev-server
-    user:
-      from_secret: dev-server-user
-    key:
-      from_secret: dev-server-key
-    source: ./dist
-    target: 
+    DEV-SERVER-PATH:
       from_secret: dev-server-path
+    DEV-SERVER-USER:
+      from_secret: dev-server-user
+    DEV-SERVER-KEY:
+      from_secret: dev-server-key
 
 ---
 kind: secret
