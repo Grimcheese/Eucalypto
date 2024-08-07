@@ -59,10 +59,9 @@ steps:
       from_secret: dev-server-user
     key:
       from_secret: dev-server-key
-    source: ./
+    source: ./dist
     target: 
       from_secret: dev-server-path
-    include: ["*.whl"]
 
 ---
 kind: secret
