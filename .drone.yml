@@ -10,11 +10,18 @@ trigger:
       - push
 
 steps:
-- name: 
+- name: Build Env
   image: dghcr.io/withlogicco/poetry:1.8.3
   commands:
   - poetry install
   - poetry build
+  environment:
+    DB_NAME:
+      from_secret: db_name
+    DB_USERNAME:
+      from_secret: username
+    DB_PASSWORD:
+      from_secret: password
   
 ---
 kind: pipeline
@@ -28,6 +35,12 @@ trigger:
     include:
       - push
 
+steps:
+- name: Build Env
+  image: dghcr.io/withlogicco/poetry:1.8.3
+  commands:
+    - poetry install
+    - poetry build
   environment:
     DB_NAME:
       from_secret: db_name
@@ -36,7 +49,6 @@ trigger:
     DB_PASSWORD:
       from_secret: password
   
-
 ---
 kind: secret
 name: db_name
