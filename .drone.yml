@@ -11,7 +11,8 @@ trigger:
 
 steps:
 - name: Build Env
-  image: pfeiffermax/python-poetry
+  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+Mu
   commands:
   - poetry install
   - poetry build
@@ -37,7 +38,8 @@ trigger:
 
 steps:
 - name: Build Env
-  image: pfeiffermax/python-poetry
+  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+Mu
   commands:
     - poetry install
     - poetry build
