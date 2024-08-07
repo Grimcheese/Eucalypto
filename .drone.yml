@@ -56,7 +56,7 @@ steps:
   image: debian
   commands:
     - apt-get install rsync
-    - rsync ./dist ${DEV-SERVER-USER}@${DEV-SERVER}:${DEV-SERVER-PATH}
+    - rsync ./dist $DEV-SERVER-USER@$DEV-SERVER:$DEV-SERVER-PATH
   environment:
     DEV-SERVER:
       from_secret: dev-server
