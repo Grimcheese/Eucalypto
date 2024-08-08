@@ -62,17 +62,8 @@ steps:
       from_secret: dev-server-key
     target: 
       from_secret: dev-server-path
-    source: ./dist/*
+    source: ./*
     overwrite: true
-  environment:
-    DEV_SERVER:
-      from_secret: dev-server
-    DEV_SERVER_PATH:
-      from_secret: dev-server-path
-    DEV_SERVER_USER:
-      from_secret: dev-server-user
-    DEV_SERVER_KEY:
-      from_secret: dev-server-key
 
 ---
 kind: secret
