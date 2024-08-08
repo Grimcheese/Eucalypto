@@ -41,6 +41,7 @@ steps:
 - name: Build
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
+    - poetry version patch
     - poetry install
     - poetry build
   environment:
@@ -65,6 +66,16 @@ steps:
     source: ./*
     overwrite: true
 
+- name: Commit version update
+  image: bitnami/git
+  commands:
+    - git status
+    - git add pyproject.toml
+    - git commit -m 'Patch version'
+
+- name: Start server
+  image: 
+  
 ---
 kind: secret
 name: dev-server
