@@ -66,15 +66,17 @@ steps:
     source: ./*
     overwrite: true
 
-- name: Commit version update
-  image: bitnami/git
-  commands:
-    - git status
-    - git add pyproject.toml
-    - git commit -m 'Patch version'
+#- name: Commit version update
+#  image: appleboy/drone-git-push
+#  settings:
+#    branch: main
+#    remote: git@gitea.grimnet.work:achawula/Eucalypto.git
+#    ssh_key: 
 
 - name: Start server
-  image: 
+  image: debian
+  commands:
+    - echo Start a script on the web server to update the build
   
 ---
 kind: secret
