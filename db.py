@@ -5,8 +5,29 @@ import hvac
 import os
 import json
 
-def connect_to_db(db_name, user, password):
-    
+class Database:
+    def __init__(self, dbname=None, user=None, password=None):
+        """Create new database connection for session"""
+        
+        if dbname == None or user == None or password == None:
+            # Default to using environment values
+            dbname=os.environ['EUCALYPTO_DB_NAME']
+            user=os.environ['EUCALYPTO_DB_USER']
+            password=os.environ['EUCALYPTO_DB_PASSWORD']
+            
+        self.connection = self.connect(dbname, user, password)
+
+
+    def _connect(self, dbname, user, password):
+        """Create a new connection to the database"""
+
+        connection = psycopg2.connect(
+            dbname=dbname,
+            user=user,
+            password=password
+        )
+
+        return connection
 
 
 def load_configuration():
