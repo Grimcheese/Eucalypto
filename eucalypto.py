@@ -77,9 +77,14 @@ def signup_page():
 @app.route('/spaces/<space_id>')
 def user_space(space_id):
     # TODO validate user is logged in and has read access to space
-    print(space_id)
     if True:
-        return render_template("base.html")
+        # Get space data - name, location, plant list
+        space_data = [
+            "test_space",
+            "123 Road Ave",
+            ["Boronia", "Eucalyptus"]
+        ]
+        return render_template("base.html", space_data=space_data)
     else:
         return render_template("error.html", 
                                error_name="Cannot display space", 
