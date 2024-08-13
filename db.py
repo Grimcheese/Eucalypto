@@ -5,6 +5,10 @@ import hvac
 import os
 import json
 
+def connect_to_db(db_name, user, password):
+    
+
+
 def load_configuration():
     """Load the configuration file"""
     with open(".secrets/.config.json", 'r') as config_file:
