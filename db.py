@@ -5,22 +5,26 @@ import hvac
 import os
 import json
 
-class Database:
-    def __init__(self, dbname=None, user=None, password=None):
-        """Create new database connection for session"""
-        
-        if dbname == None or user == None or password == None:
-            # Default to using environment values
-            dbname=os.environ['EUCALYPTO_DB_NAME']
-            user=os.environ['EUCALYPTO_DB_USER']
-            password=os.environ['EUCALYPTO_DB_PASSWORD']
-            
-        self.connection = self.connect(dbname, user, password)
+def db_connect(dbname=None, user=None, password=None):
+    """Create new database connection for session
+    
+    Args:
+        dbname: Name of database to access
+        user: Username to access the database with
+        password: Password to access user account with
+    
+    Return: A psycopg2 connection object referncing the database
+        that has been connected to. Return of None means there
+        was an issue with connecting to the database.
+    """
+    
+    if dbname == None or user == None or password == None:
+        # Default to using environment values
+        dbname=os.environ['EUCALYPTO_DB_NAME']
+        user=os.environ['EUCALYPTO_DB_USER']
+        password=os.environ['EUCALYPTO_DB_PASSWORD']
 
-
-    def _connect(self, dbname, user, password):
-        """Create a new connection to the database"""
-
+    try:    
         connection = psycopg2.connect(
             dbname=dbname,
             user=user,
@@ -28,7 +32,29 @@ class Database:
         )
 
         return connection
+    except psycopg2.OperationalError as e:
+        return None
 
+
+def close(connection):
+    """Close the connection to psycopg2 database"""
+    connection.close()
+
+
+def query(connection, query, params):
+    """Create and send an SQL query with parameters to database"""
+    cursor = connection.cursor()
+    
+    cursor.execute(query, params)
+    results = cursor.fetchall()
+
+    connection.commit()
+    cursor.close()
+
+    return results
+    
+
+"""Old db functions, may be redundant with Drone CI/CD system."""
 
 def load_configuration():
     """Load the configuration file"""
