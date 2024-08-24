@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: "Test Latest Push"
+name: Test Latest Push
 
 trigger:
   branch:
@@ -18,7 +18,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: "Test Dev Server Stage"
+name: Test Dev Server Stage
 
 trigger:
   branch:
@@ -68,7 +68,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: "Main branch test"
+name: Main branch test
 
 trigger:
   branch:
