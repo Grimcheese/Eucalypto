@@ -14,6 +14,14 @@ This document provides a brief description of the project and in future
 how to use the project. More specific information will be provided in 
 the docs which can be viewed on the wiki page.
 
+# Status
+
+Main [![Build Status](https://drone.grimnet.work/api/badges/achawula/Eucalypto/status.svg?ref=refs/heads/main)](https://drone.grimnet.work/achawula/Eucalypto)
+
+Staging [![Build Status](https://drone.grimnet.work/api/badges/achawula/Eucalypto/status.svg?ref=refs/heads/staging)](https://drone.grimnet.work/achawula/Eucalypto)
+
+Latest dev push [![Build Status](https://drone.grimnet.work/api/badges/achawula/Eucalypto/status.svg?ref=refs/heads/dev)](https://drone.grimnet.work/achawula/Eucalypto)
+
 ## The website
 
 The website will allow users to search and view plants that are stored 
