@@ -1,10 +1,10 @@
 kind: pipeline
 type: docker
-name: 'Test Latest Push'
+name: "Test Latest Push"
 
 trigger:
   branch:
-    - dev*
+    - dev
   event:
     - push
 
