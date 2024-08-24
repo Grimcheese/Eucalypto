@@ -4,7 +4,7 @@ name: 'Test Latest Push'
 
 trigger:
   branch:
-    - ${DRONE_BRANCH}-*
+    - ${DRONE_BRANCH}*
   event:
     - push
 
