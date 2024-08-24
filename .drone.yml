@@ -4,7 +4,7 @@ name: "Test Development Push"
 
 trigger:
   branch:
-    - dev*
+    - dev/*
   event:
     include:
       - push
