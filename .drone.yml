@@ -4,10 +4,9 @@ name: "Test Latest Push"
 
 trigger:
   branch:
-    - dev-*
+    - ${DRONE_BRANCH}-*
   event:
-    include:
-      - push
+    - push
 
 steps:
 - name: Build Env
@@ -25,8 +24,7 @@ trigger:
   branch:
     - dev-stage
   event:
-    include:
-      - push
+    - push
 
 steps:
 - name: Build
@@ -76,8 +74,7 @@ trigger:
   branch:
     - main
   event:
-    include:
-      - push
+    - push
 
 steps:
 - name: Run Tests
