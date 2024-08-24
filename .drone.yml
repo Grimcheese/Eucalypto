@@ -1,10 +1,10 @@
 kind: pipeline
 type: docker
-name: "Test Environment"
+name: "Test Latest Push"
 
 trigger:
   branch:
-    - dev
+    - dev*
   event:
     include:
       - push
@@ -24,18 +24,17 @@ steps:
       from_secret: username
     DB_PASSWORD:
       from_secret: password
-  
+
 ---
 kind: pipeline
 type: docker
-name: "Server Test Stage"
+name: 'Test Dev Server Stage'
 
 trigger:
   branch:
-    - main
+    - dev-stage
   event:
-    include:
-      - push
+    - push
 
 steps:
 - name: Build
@@ -52,7 +51,7 @@ steps:
     DB_PASSWORD:
       from_secret: password
     
-- name: Sync to stage server
+- name: 'Sync to stage server'
   image: appleboy/drone-scp
   settings:
     host: 
@@ -66,18 +65,34 @@ steps:
     source: ./*
     overwrite: true
 
-#- name: Commit version update
-#  image: appleboy/drone-git-push
-#  settings:
-#    branch: main
-#    remote: git@gitea.grimnet.work:achawula/Eucalypto.git
-#    ssh_key: 
+- name: 'Commit version update'
+  image: chainguard/git
+  commands:
+    - git status
 
-- name: Start server
+- name: 'Start server'
   image: debian
   commands:
     - echo Start a script on the web server to update the build
   
+---
+kind: pipeline
+type: docker
+name: 'Main branch test'
+
+trigger:
+  branch:
+    - main
+  event:
+    - push
+
+steps:
+- name: 'Run Tests'
+  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+  commands:
+  - poetry install
+  - poetry run pytest
+
 ---
 kind: secret
 name: dev-server
