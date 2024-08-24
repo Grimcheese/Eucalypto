@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: Test Latest Push
+name: 'Test Latest Push'
 
 trigger:
   branch:
@@ -9,7 +9,7 @@ trigger:
     - push
 
 steps:
-- name: Build Env
+- name: 'Build Env'
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
   - poetry install --with test
@@ -18,7 +18,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: Test Dev Server Stage
+name: 'Test Dev Server Stage'
 
 trigger:
   branch:
@@ -41,7 +41,7 @@ steps:
     DB_PASSWORD:
       from_secret: password
     
-- name: Sync to stage server
+- name: 'Sync to stage server'
   image: appleboy/drone-scp
   settings:
     host: 
@@ -55,12 +55,12 @@ steps:
     source: ./*
     overwrite: true
 
-- name: Commit version update
+- name: 'Commit version update'
   image: chainguard/git
   commands:
     - git status
 
-- name: Start server
+- name: 'Start server'
   image: debian
   commands:
     - echo Start a script on the web server to update the build
@@ -68,7 +68,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: Main branch test
+name: 'Main branch test'
 
 trigger:
   branch:
@@ -77,7 +77,7 @@ trigger:
     - push
 
 steps:
-- name: Run Tests
+- name: 'Run Tests'
  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
  commands:
   - poetry install
