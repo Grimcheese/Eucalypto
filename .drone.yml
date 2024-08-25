@@ -34,6 +34,10 @@ steps:
     - poetry install --with test
     - poetry run pytest
     - poetry build
+    - poetry version patch
+    - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
+    - apt install git -y
+    - git tag $TAG_VALUE
   environment:
     DB_NAME:
       from_secret: db_name
@@ -41,7 +45,7 @@ steps:
       from_secret: username
     DB_PASSWORD:
       from_secret: password
-    
+
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
   settings:
@@ -51,15 +55,14 @@ steps:
       from_secret: dev-server-user 
     key: 
       from_secret: dev-server-key
-    target: 
-      from_secret: dev-server-path
+    target: ${PATH_BUILD_DIR}
     source: ./*
     overwrite: true
-
-- name: 'Update version number'
-  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
-  commands:
-    - poetry version patch
+  environment:
+    DEV_SERVER_PATH:
+      from_secret: dev-server-path
+    PATH_BUILD_DIR:
+      ${DEV_SERVER_PATH}${DRONE_SEMVER}
 
 - name: 'Commit version update'
   image: chainguard/git
