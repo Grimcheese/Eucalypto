@@ -25,9 +25,7 @@ trigger:
   branch:
     - staging
   event:
-    - pull-request
-  action:
-    - opened
+    - push
 
 
 steps:
