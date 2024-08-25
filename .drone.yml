@@ -52,7 +52,7 @@ steps:
     - DEST_DIR=$(ls -d ./eucalypto-*)
     - echo $DEST_DIR
     - echo ${DEST_DIR}
-    - cp -r ./!(${DEST_DIR:2}) $DEST_DIR
+    - cp -r ./!($${DEST_DIR:2w}) $DEST_DIR
     - ls -R .
 
 - name: 'Sync to staging server'
