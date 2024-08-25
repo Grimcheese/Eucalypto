@@ -46,9 +46,10 @@ steps:
     - poetry build    
 
 - name: Pack build
-  image: chainguard/git
+  image: debian/bookworm
   commands:
-    - cp -r ./* ../eucalypto-*
+    - cp -r ./* ../eucalypto-*/
+    - ls -R
 
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
