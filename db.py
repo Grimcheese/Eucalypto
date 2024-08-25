@@ -19,10 +19,13 @@ def db_connect(dbname=None, user=None, password=None):
     """
     
     if dbname == None or user == None or password == None:
-        # Default to using environment values
-        dbname=os.environ['EUCALYPTO_DB_NAME']
-        user=os.environ['EUCALYPTO_DB_USER']
-        password=os.environ['EUCALYPTO_DB_PASSWORD']
+        # Get credentials
+        
+        credentials = get_db_credentials()
+        dbname = credentials["db_name"]
+        user = credentials["db_username"]
+        password = credetials["db_password"]
+        
 
     try:    
         connection = psycopg2.connect(
@@ -63,9 +66,10 @@ def load_configuration():
     print(conf_data.keys())
     return conf_data
 
-def get_db_credentials(conf_data):
+def get_db_credentials():
     """Use Vault credential storage for db credentials"""
 
+    #app-role-id = os.environ["DEV-APPROLE-ID"]
 
     # Initialise vault client using TLS
     client = hvac.Client(
@@ -73,41 +77,39 @@ def get_db_credentials(conf_data):
         verify=True
     )
 
-    # Get secret-id
-    resp = client.auth.approle.generate_secret_id(
-        role_name='eucalypto',
-        wrap_ttl='1m'
-    )
-
-    print(resp)
-
     # Login using approle
     client.auth.approle.login(
-        role_id=conf_data['role_id'],
-        secret_id="b67c3c4c-3738-b15d-3f25-00d8ec0306a1"
+        role_id="55cb6ff6-8186-9c0c-52e7-9d7faa5ff4ab"
     )
+
+    if client.is_authenticated():
+        print("Vault authentication successful!")
+    else:
+        print("Unable to autheticate with Vault server")
+
+    secret = client.secrets.kv.v2.read_secret_version(
+        path="/eucalypto/db-info",
+        mount_point="kv-v2",
+        raise_on_deleted_version=True
+    )
+
     
-    print(client.is_authenticated())
+    db_info = {
+        'db_name': secret['data']['data']['db_name'],
+        'db_username': secret['data']['data']['db_username'],
+        'db_password': secret['data']['data']['db_password']}
     
-    resp = client.auth.approle.read_role_id(
-        role_name='some-role',
-    )
-    print(f'AppRole role ID for some-role: {resp["data"]["role_id"]}')
 
-    secret_version_response = client.secrets.kv.v2.read_secret_version(
-       path="eucalypto"
-    )
+    ### Old method for getting creds from environment - could use in future versions
+    #dbname=os.environ['EUCALYPTO_DB_NAME']
+    #user=os.environ['EUCALYPTO_DB_USER']
+    #password=os.environ['EUCALYPTO_DB_PASSWORD']
 
-    print(f"Secret response - {secret_version_response}")
+    return db_info
 
-    return client
-
-
-def create_connection(self):
-    pass
 
 
 if __name__ == '__main__':
     #conf_data = load_configuration()
-    #get_db_credentials(conf_data)
-    print(os.environ['DB_NAME'])
+    get_db_credentials()
+    #print(os.environ['DB_NAME'])
