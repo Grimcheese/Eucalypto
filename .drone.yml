@@ -39,13 +39,12 @@ steps:
     - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
     - apt install git -y
     - git tag $TAG_VALUE
-  environment:
-    DB_NAME:
-      from_secret: db_name
-    DB_USERNAME:
-      from_secret: username
-    DB_PASSWORD:
-      from_secret: password
+
+- name: Pack build
+  image: chainguard/git
+  commands:
+    - echo ${DRONE_SEMVER}
+
 
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
