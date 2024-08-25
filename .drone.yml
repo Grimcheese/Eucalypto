@@ -39,6 +39,8 @@ steps:
     - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
     - apt install git -y
     - git tag $TAG_VALUE
+    - mkdir ../eucalypto-${TAG_VALUE}
+    - ls ..
 
 - name: Pack build
   image: chainguard/git
