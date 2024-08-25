@@ -48,8 +48,9 @@ steps:
 - name: Pack build
   image: debian
   commands:
-    - cp -r ./* ../eucalypto-*/
-    - ls -R
+    - DEST_DIR=$(ls -d ../eucalypto-*)
+    - cp -r ./* $DEST_DIR
+    - ls -R ..
 
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
