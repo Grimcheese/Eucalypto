@@ -23,9 +23,10 @@ name: 'Test Dev Server Stage'
 
 trigger:
   branch:
-    - staging
+    - dev/*
   event:
     - pull-request
+
 
 steps:
 - name: Run tests and build
