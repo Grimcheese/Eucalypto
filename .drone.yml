@@ -27,26 +27,28 @@ trigger:
   event:
     - push
 
-
 steps:
+- name: Update metadata and create build directory
+  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+  commands:
+    - poetry version patch
+    - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
+    - apt install git -y
+    - git tag $TAG_VALUE
+    - mkdir ../eucalypto-$TAG_VALUE
+    - ls ..
+
 - name: Run tests and build
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
     - poetry install --with test
     - poetry run pytest
-    - poetry build
-    - poetry version patch
-    - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
-    - apt install git -y
-    - git tag $TAG_VALUE
-    - mkdir ../eucalypto-${TAG_VALUE}
-    - ls ..
+    - poetry build    
 
 - name: Pack build
   image: chainguard/git
   commands:
-    - echo ${DRONE_SEMVER}
-
+    - cp -r ./* ../eucalypto-*
 
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
