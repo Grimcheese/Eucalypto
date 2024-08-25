@@ -46,7 +46,7 @@ steps:
     - poetry build    
 
 - name: Pack build
-  image: debian/bookworm
+  image: debian
   commands:
     - cp -r ./* ../eucalypto-*/
     - ls -R
