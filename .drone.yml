@@ -50,9 +50,8 @@ steps:
   commands:
     - ls 
     - DEST_DIR=$(ls -d eucalypto-*)
-    - echo $DEST_DIR
-    - echo ${DEST_DIR}
-    - cp -r ./!($DEST_DIR) ./$DEST_DIR
+    - rsync -Rr ./* ./$DEST_DIR
+    - rmdir -r ./$DEST_DIR/$DEST_DIR
     - ls -R .
 
 - name: 'Sync to staging server'
