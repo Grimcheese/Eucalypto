@@ -46,9 +46,8 @@ steps:
 #    - poetry build    
 
 - name: Pack build
-  image: debian
+  image: secoresearch/rsync
   commands:
-    - apt install rsync -y
     - ls 
     - DEST_DIR=$(ls -d eucalypto-*)
     - rsync -Rr ./* ./$DEST_DIR
