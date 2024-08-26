@@ -48,6 +48,7 @@ steps:
 - name: Pack build
   image: debian
   commands:
+    - apt install rsync -y
     - ls 
     - DEST_DIR=$(ls -d eucalypto-*)
     - rsync -Rr ./* ./$DEST_DIR
