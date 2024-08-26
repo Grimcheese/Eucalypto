@@ -48,7 +48,6 @@ steps:
 - name: Pack build
   image: achawula/debian-rsync:test
   commands:
-    - sudo apt install rsync -y
     - ls 
     - DEST_DIR=$(ls -d eucalypto-*)
     - rsync -Rr ./* ./$DEST_DIR
