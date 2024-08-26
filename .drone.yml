@@ -27,6 +27,13 @@ trigger:
   event:
     - push
 
+#- name: Run tests and build
+#  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+#  commands:
+#    - poetry install --with test
+#    - poetry run pytest
+#    - poetry build    
+
 steps:
 - name: Update metadata and create build directory
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
@@ -37,13 +44,6 @@ steps:
     - git tag $TAG_VALUE
     - mkdir ./eucalypto-$TAG_VALUE
     - ls .
-
-#- name: Run tests and build
-#  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
-#  commands:
-#    - poetry install --with test
-#    - poetry run pytest
-#    - poetry build    
 
 - name: Pack build
   image: achawula/debian-rsync:test
@@ -63,14 +63,10 @@ steps:
       from_secret: dev-server-user 
     key: 
       from_secret: dev-server-key
-    target: ${PATH_BUILD_DIR}
-    source: ./*
-    overwrite: true
-  environment:
-    DEV_SERVER_PATH:
+    target: 
       from_secret: dev-server-path
-    PATH_BUILD_DIR:
-      ${DEV_SERVER_PATH}${DRONE_SEMVER}
+    source: ./eucalypto-*/
+    overwrite: true
 
 - name: 'Commit version update'
   image: chainguard/git
