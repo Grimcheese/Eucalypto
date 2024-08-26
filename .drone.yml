@@ -69,7 +69,7 @@ steps:
     overwrite: true
 
 - name: 'Commit version update'
-  image: chainguard/git
+  image: achawula/eucalypto-build:test
   commands:
     - git status
 
