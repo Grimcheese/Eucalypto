@@ -46,7 +46,7 @@ steps:
 #    - poetry build    
 
 - name: Pack build
-  image: achawula/debian-rsync
+  image: achawula/debian-rsync:test
   commands:
     - sudo apt install rsync -y
     - ls 
