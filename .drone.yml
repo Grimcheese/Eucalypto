@@ -52,7 +52,7 @@ steps:
     - DEST_DIR=$(ls -d eucalypto-*)
     - rsync -Rr ./* ./$DEST_DIR
     - rm -rf ./$DEST_DIR/$DEST_DIR
-    - ls -R .
+    - ls .
 
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
@@ -65,7 +65,7 @@ steps:
       from_secret: dev-server-key
     target: 
       from_secret: dev-server-path
-    source: ./eucalypto-*/
+    source: ./eucalypto-*/*
     overwrite: true
 
 - name: 'Commit version update'
