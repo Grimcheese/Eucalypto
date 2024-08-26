@@ -47,12 +47,16 @@ steps:
 
 - name: Pack build
   image: secoresearch/rsync
-  commands:
-    - ls 
-    - DEST_DIR=$(ls -d eucalypto-*)
-    - rsync -Rr ./* ./$DEST_DIR
-    - rmdir -r ./$DEST_DIR/$DEST_DIR
-    - ls -R .
+  environment:
+    RSYNC_SOURCE: ./*
+    RSYNC_TARGET: ./eucalypto-*
+    RSYNC_OPTIONS: -Rr
+    #- sudo apt install rsync -y
+    #- ls 
+    #- DEST_DIR=$(ls -d eucalypto-*)
+    #- rsync -Rr ./* ./$DEST_DIR
+    #- rmdir -r ./$DEST_DIR/$DEST_DIR
+    #- ls -R .
 
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
