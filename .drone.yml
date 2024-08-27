@@ -11,6 +11,7 @@ trigger:
 
 steps:
 - name: Run test on latest changes
+  pull: always
   image: achawula/eucalypto-build:0.1
   commands:
   - poetry install --with test
