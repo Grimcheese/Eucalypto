@@ -15,6 +15,9 @@ steps:
   commands:
   - poetry install --with test
   - poetry run pytest
+  environment:
+    ROLE_ID:
+      from_secret: role-id
   
 ---
 kind: pipeline
@@ -33,7 +36,10 @@ steps:
   commands:
     - poetry install --with test
     - poetry run pytest
-    - poetry build   
+    - poetry build  
+  environment:
+    ROLE_ID:
+      from_secret: role-id 
 
 - name: Create build directory for transfer
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
@@ -134,3 +140,10 @@ name: password
 get:
   path: kv-v2/data/eucalypto/db-info
   name: db_password
+
+---
+kind: secret
+name: role-id
+get:
+  path: kv-v2/data/eucalypto/dev-stage
+  name: role-id

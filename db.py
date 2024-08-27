@@ -67,9 +67,9 @@ def load_configuration():
     return conf_data
 
 def get_db_credentials():
-    """Use Vault credential storage for db credentials"""
+    """Get database credentials from Vault"""
 
-    #app-role-id = os.environ["DEV-APPROLE-ID"]
+    app_role_id = os.environ["ROLE_ID"]
 
     # Initialise vault client using TLS
     client = hvac.Client(
@@ -79,7 +79,7 @@ def get_db_credentials():
 
     # Login using approle
     client.auth.approle.login(
-        role_id="55cb6ff6-8186-9c0c-52e7-9d7faa5ff4ab"
+        role_id=app_role_id
     )
 
     if client.is_authenticated():
