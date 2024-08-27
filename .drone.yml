@@ -14,7 +14,7 @@ steps:
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
   - poetry install --with test
-  - poetry run pytest
+  - poetry run pytest -rPf
   environment:
     ROLE_ID:
       from_secret: role-id
