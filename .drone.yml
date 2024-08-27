@@ -11,7 +11,7 @@ trigger:
 
 steps:
 - name: Run test on latest changes
-  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+  image: achawula/eucalypto-build:0.1
   commands:
   - poetry install --with test
   - poetry run pytest -rPf
@@ -32,7 +32,7 @@ trigger:
 
 steps:
 - name: Run tests on staging
-  image: achawula/eucalypto-build:test
+  image: achawula/eucalypto-build:0.1
   commands:
     - poetry install --with test
     - poetry run pytest -rPf
@@ -53,7 +53,7 @@ trigger:
 
 steps:
 - name: Version increment and repository update
-  image: achawula/eucalypto-build:test
+  image: achawula/eucalypto-build:0.1
   commands:
     - poetry version patch
     - git add pyproject.toml
@@ -61,14 +61,14 @@ steps:
     - git push gitea staging
 
 - name: Create build directory for transfer
-  image: achawula/eucalypto-build:test
+  image: achawula/eucalypto-build:0.1
   commands:
     - poetry build  
     - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
     - mkdir ./eucalypto-$TAG_VALUE
 
 - name: Pack build
-  image: achawula/eucalypto-build:test
+  image: achawula/eucalypto-build:0.1
   commands:
     - ls 
     - DEST_DIR=$(ls -d eucalypto-*)
@@ -90,7 +90,7 @@ steps:
     overwrite: true
 
 - name: 'Start server'
-  image: achawula/eucalypto-build:test
+  image: achawula/eucalypto-build:0.1
   commands:
     - echo Start a script on the web server to update the build
 
