@@ -22,7 +22,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: 'Test Dev Server Stage'
+name: 'Staging tests'
 
 trigger:
   branch:
@@ -31,24 +31,44 @@ trigger:
     - push
 
 steps:
-- name: Run tests and build
-  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+- name: Run tests on staging
+  image: achawula/eucalypto-build:test
   commands:
     - poetry install --with test
-    - poetry run pytest
-    - poetry build  
+    - poetry run pytest -rPf
   environment:
     ROLE_ID:
       from_secret: role-id 
 
-- name: Create build directory for transfer
-  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+---
+kind: pipeline
+type: docker
+name: Deploy to staging
+
+trigger:
+  event:
+  - promote
+  target:
+  - staging
+
+steps:
+- name: Version increment and repository update
+  image: achawula/eucalypto-build:test
   commands:
+    - poetry version patch
+    - git add pyproject.toml
+    - git commit -m "Increment eucalypto patch version"
+    - git push gitea staging
+
+- name: Create build directory for transfer
+  image: achawula/eucalypto-build:test
+  commands:
+    - poetry build  
     - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
     - mkdir ./eucalypto-$TAG_VALUE
 
 - name: Pack build
-  image: achawula/debian-rsync:test
+  image: achawula/eucalypto-build:test
   commands:
     - ls 
     - DEST_DIR=$(ls -d eucalypto-*)
@@ -70,10 +90,10 @@ steps:
     overwrite: true
 
 - name: 'Start server'
-  image: achawula/debian-rsync:test
+  image: achawula/eucalypto-build:test
   commands:
     - echo Start a script on the web server to update the build
-  
+
 ---
 kind: pipeline
 type: docker
