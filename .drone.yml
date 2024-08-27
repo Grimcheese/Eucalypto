@@ -27,23 +27,19 @@ trigger:
   event:
     - push
 
-#- name: Run tests and build
-#  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
-#  commands:
-#    - poetry install --with test
-#    - poetry run pytest
-#    - poetry build    
-
 steps:
-- name: Update metadata and create build directory
+- name: Run tests and build
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
-    - poetry version patch
+    - poetry install --with test
+    - poetry run pytest
+    - poetry build   
+
+- name: Create build directory for transfer
+  image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
+  commands:
     - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
-    - apt install git -y
-    - git tag $TAG_VALUE
     - mkdir ./eucalypto-$TAG_VALUE
-    - ls .
 
 - name: Pack build
   image: achawula/debian-rsync:test
@@ -52,7 +48,6 @@ steps:
     - DEST_DIR=$(ls -d eucalypto-*)
     - rsync -Rr ./* ./$DEST_DIR
     - rm -rf ./$DEST_DIR/$DEST_DIR
-    - ls .
 
 - name: 'Sync to staging server'
   image: appleboy/drone-scp
@@ -68,13 +63,8 @@ steps:
     source: ./eucalypto-*/*
     overwrite: true
 
-- name: 'Commit version update'
-  image: achawula/eucalypto-build:test
-  commands:
-    - git status
-
 - name: 'Start server'
-  image: debian
+  image: achawula/debian-rsync:test
   commands:
     - echo Start a script on the web server to update the build
   
