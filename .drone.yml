@@ -38,7 +38,6 @@ steps:
 - name: Update metadata and create build directory
   image: pfeiffermax/python-poetry:1.11.0-poetry1.8.3-python3.12.3-bookworm
   commands:
-    - poetry version patch
     - TAG_VALUE=$(poetry version | cut -d' ' -f2-) 
     - apt install git -y
     - git tag $TAG_VALUE
@@ -71,7 +70,11 @@ steps:
 - name: 'Commit version update'
   image: achawula/eucalypto-build:test
   commands:
+    - cat pyproject.toml
     - git status
+    - git add pyproject.toml
+    - git commit -m "Increment patch version"
+    - git push 
 
 - name: 'Start server'
   image: debian
