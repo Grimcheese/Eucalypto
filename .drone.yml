@@ -59,10 +59,9 @@ steps:
     - poetry version patch
     - mkdir -p ~/.ssh
     - echo $GIT_KEY >> ~/.ssh/id_rsa
-    - git config --local core.sshCommand "usr/bin/ssh -i ~/.ssh/id_rsa"
     - git add pyproject.toml
     - git commit -m "Increment eucalypto patch version"
-    - git push gitea@gitea.grimnet.work:achawula/Eucalypto.git staging
+    - GIT_SSH_COMMAND='ssh -i ~/.ssh/id_rsa -o IdentitiesOnly=yes' git push gitea@gitea.grimnet.work:achawula/Eucalypto.git staging
   environment:
     GIT_KEY:
       from_secret: git_ssh_key
