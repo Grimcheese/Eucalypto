@@ -57,6 +57,7 @@ steps:
   image: achawula/eucalypto-build:latest
   commands:
     - poetry version patch
+    - mkdir -p ~/.ssh
     - cat $GIT_KEY >> ~/.ssh/id_rsa
     - git config --local core.sshCommand "usr/bin/ssh -i ~/.ssh/id_rsa
     - git add pyproject.toml
