@@ -58,7 +58,7 @@ steps:
   commands:
     - poetry version patch
     - mkdir -p ~/.ssh
-    - echo -n $GIT_KEY > ~/.ssh/id_rsa
+    - echo -n "$GIT_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - git add pyproject.toml
     - git commit -m "Increment eucalypto patch version"
