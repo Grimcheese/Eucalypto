@@ -57,9 +57,14 @@ steps:
   image: achawula/eucalypto-build:latest
   commands:
     - poetry version patch
+    - cat $GIT_KEY >> ~/.ssh/id_rsa
+    - git config --local core.sshCommand "usr/bin/ssh -i ~/.ssh/id_rsa
     - git add pyproject.toml
     - git commit -m "Increment eucalypto patch version"
     - git push gitea@gitea.grimnet.work:achawula/Eucalypto.git staging
+  environment:
+    GIT_KEY:
+      from_secret: git_ssh_key
 
 - name: Create build directory for transfer
   image: achawula/eucalypto-build:0.1
@@ -168,3 +173,10 @@ name: role-id
 get:
   path: kv-v2/data/eucalypto/dev-stage
   name: role-id
+
+---
+kind: secret
+name: git_ssh_key
+get:
+  path: kv-v2/data/eucalypto/dev-stage
+  name: git_ssh_key
