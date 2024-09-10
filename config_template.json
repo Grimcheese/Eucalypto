@@ -1,0 +1,5 @@
+{
+    "db_config": {
+        "vault_server": "https://hostname.here"
+    }
+}

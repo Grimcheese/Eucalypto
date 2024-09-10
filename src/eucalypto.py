@@ -5,7 +5,7 @@ from flask import render_template, redirect
 from flask import request, session, url_for
 from flask import g
 
-from db import Database
+#from db import Database
 
 app = Flask(__name__)
 app.secret_key = b'temporary_key' # TODO USE VAULT KEY FOR SIGNING
@@ -27,7 +27,7 @@ def login_page():
         else:
             return render_template("login.html", login_error=False)
     if request.method == 'POST':
-        if request.form['username'] == "user" and request.form['password'] == "password":
+        if validate_user_login(request.form['username'], request.form['password']):
             session['logged_in'] = True
             return redirect(url_for('home_page'))
         else:
@@ -93,6 +93,7 @@ def user_space(space_id):
         return render_template("error.html", 
                                error_name="Cannot display space", 
                                error_message="For some reason you cannot view this space. Maybe you aren't logged in, don't have permission or the space does not exist.")
+
 
 def validate_user_login(user, password):
     db = get_db()
