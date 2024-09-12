@@ -75,7 +75,8 @@ def get_db_credentials(auth_method):
 
     if auth_method == 'vault':
         return vault_authentication("https://vault.grimnet.work:8200")
-    
+    elif auth_method == 'config':
+        return config_file_authentication()
 
     ### Old method for getting creds from environment - could use in future versions
     #dbname=os.environ['EUCALYPTO_DB_NAME']
@@ -84,8 +85,24 @@ def get_db_credentials(auth_method):
 
     return None
 
+def config_file_authentication():
+    """Authentication method using the configuration file."""
+
+    # Retrieve db url, name, username and password from config file
+    config = read_config.Config()
+    db_info = config.get_config("db_url", "db_name", "db_username", "db_password")
+
+    return {
+        'db_name': db_info['db_name'],
+        'db_username': db_info['db_username'],
+        'db_password': db_info['db_password']}
+
+
 
 def vault_authentication(vault_url):
+    """DB authentication method using Vault server."""
+    
+    
     app_role_id = os.environ["ROLE_ID"]
 
     # Initialise vault client using TLS
@@ -110,7 +127,7 @@ def vault_authentication(vault_url):
         raise_on_deleted_version=True
     )
 
-    db_info = {
+    return {
         'db_name': secret['data']['data']['db_name'],
         'db_username': secret['data']['data']['db_username'],
         'db_password': secret['data']['data']['db_password']}
