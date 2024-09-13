@@ -7,7 +7,7 @@ import json
 
 import read_config
 
-def db_connect(dbname=None, user=None, password=None):
+def db_connect(config, dbname=None, user=None, password=None):
     """Create new database connection for session
     
     Args:
@@ -23,7 +23,7 @@ def db_connect(dbname=None, user=None, password=None):
     if dbname == None or user == None or password == None:
         # Get credentials
         
-        auth_method = read_config.db_auth()
+        auth_method = config.db_auth()
 
         credentials = get_db_credentials(auth_method)
         dbname = credentials["db_name"]
@@ -70,13 +70,13 @@ def load_configuration():
     print(conf_data.keys())
     return conf_data
 
-def get_db_credentials(auth_method):
+def get_db_credentials(config, auth_method):
     """Get database credentials from Vault"""
 
     if auth_method == 'vault':
-        return vault_authentication("https://vault.grimnet.work:8200")
+        return vault_authentication(config)
     elif auth_method == 'config':
-        return config_file_authentication()
+        return config_file_authentication(config)
 
     ### Old method for getting creds from environment - could use in future versions
     #dbname=os.environ['EUCALYPTO_DB_NAME']
@@ -85,12 +85,14 @@ def get_db_credentials(auth_method):
 
     return None
 
-def config_file_authentication():
+def config_file_authentication(config):
     """Authentication method using the configuration file."""
 
     # Retrieve db url, name, username and password from config file
-    config = read_config.Config()
-    db_info = config.get_config("db_url", "db_name", "db_username", "db_password")
+    try:
+        db_info = config.get_config("db_url", "db_name", "db_username", "db_password")
+    except ValueError:
+        raise Exception("Unable to get database credentials from config")
 
     return {
         'db_name': db_info['db_name'],
@@ -99,10 +101,11 @@ def config_file_authentication():
 
 
 
-def vault_authentication(vault_url):
+def vault_authentication(config):
     """DB authentication method using Vault server."""
     
-    
+    vault_url = config.get_config("vault_server_url")
+
     app_role_id = os.environ["ROLE_ID"]
 
     # Initialise vault client using TLS
