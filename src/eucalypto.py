@@ -5,13 +5,16 @@ from flask import render_template, redirect
 from flask import request, session, url_for
 from flask import g
 
-#from db import Database
+import db
+from read_config import Config
 
 app = Flask(__name__)
 app.secret_key = b'temporary_key' # TODO USE VAULT KEY FOR SIGNING
 
 test_user = "user"
 test_password = "password"
+
+config = Config()
 
 @app.route('/')
 def home_page():
@@ -107,7 +110,7 @@ def validate_user_login(user, password):
 
 def get_db():
     if 'db' not in g:
-        g.db = Database()
+        g.db = db.db_connect(config)
 
     return g.db
 

@@ -1,3 +1,10 @@
+"""
+Unit testing for read_config module
+
+Classes: 
+    Config
+"""
+
 from pathlib import Path
 import pytest
 
@@ -5,6 +12,8 @@ from ...src import read_config
 
 
 def test_get_config():
+    """Test Config.get_config() method"""
+
     configuration = read_config.Config(path="config.cfg")
 
     # A valid field returns the actual value
