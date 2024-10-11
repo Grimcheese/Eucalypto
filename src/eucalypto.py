@@ -3,12 +3,18 @@
 from flask import Flask
 from flask import render_template, redirect
 from flask import request, session, url_for
+from flask import g
+
+import db
+from read_config import Config
 
 app = Flask(__name__)
 app.secret_key = b'temporary_key' # TODO USE VAULT KEY FOR SIGNING
 
 test_user = "user"
 test_password = "password"
+
+config = Config()
 
 @app.route('/')
 def home_page():
@@ -24,7 +30,7 @@ def login_page():
         else:
             return render_template("login.html", login_error=False)
     if request.method == 'POST':
-        if request.form['username'] == "user" and request.form['password'] == "password":
+        if validate_user_login(request.form['username'], request.form['password']):
             session['logged_in'] = True
             return redirect(url_for('home_page'))
         else:
@@ -78,7 +84,7 @@ def signup_page():
 @app.route('/spaces/<space_id>')
 def user_space(space_id):
     # TODO validate user is logged in and has read access to space
-    if True:
+    if session["logged_in"] == True:
         # Get space data - name, location, plant list
         space_data = [
             "test_space",
@@ -90,6 +96,31 @@ def user_space(space_id):
         return render_template("error.html", 
                                error_name="Cannot display space", 
                                error_message="For some reason you cannot view this space. Maybe you aren't logged in, don't have permission or the space does not exist.")
+
+
+def validate_user_login(user, password):
+    db = get_db()
+    
+    if user in db.get_users() and password == db.get_pwd(user):
+        return True
+    else:
+        return False
+    
+
+
+def get_db():
+    if 'db' not in g:
+        g.db = db.db_connect(config)
+
+    return g.db
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

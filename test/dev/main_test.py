@@ -1,6 +1,6 @@
 import pytest
 
-from ... import eucalypto
+from ...src import eucalypto
 
 #@pytest.fixture()
 #def app():

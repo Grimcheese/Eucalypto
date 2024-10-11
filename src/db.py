@@ -5,7 +5,9 @@ import hvac
 import os
 import json
 
-def db_connect(dbname=None, user=None, password=None):
+import read_config
+
+def db_connect(config, dbname=None, user=None, password=None):
     """Create new database connection for session
     
     Args:
@@ -21,10 +23,12 @@ def db_connect(dbname=None, user=None, password=None):
     if dbname == None or user == None or password == None:
         # Get credentials
         
-        credentials = get_db_credentials()
+        auth_method = config.db_auth()
+
+        credentials = get_db_credentials(auth_method)
         dbname = credentials["db_name"]
         user = credentials["db_username"]
-        password = credetials["db_password"]
+        password = credentials["db_password"]
         
 
     try:    
@@ -66,14 +70,47 @@ def load_configuration():
     print(conf_data.keys())
     return conf_data
 
-def get_db_credentials():
+def get_db_credentials(config, auth_method):
     """Get database credentials from Vault"""
+
+    if auth_method == 'vault':
+        return vault_authentication(config)
+    elif auth_method == 'config':
+        return config_file_authentication(config)
+
+    ### Old method for getting creds from environment - could use in future versions
+    #dbname=os.environ['EUCALYPTO_DB_NAME']
+    #user=os.environ['EUCALYPTO_DB_USER']
+    #password=os.environ['EUCALYPTO_DB_PASSWORD']
+
+    return None
+
+def config_file_authentication(config):
+    """Authentication method using the configuration file."""
+
+    # Retrieve db url, name, username and password from config file
+    try:
+        db_info = config.get_config("db_url", "db_name", "db_username", "db_password")
+    except ValueError:
+        raise Exception("Unable to get database credentials from config")
+
+    return {
+        'db_name': db_info['db_name'],
+        'db_username': db_info['db_username'],
+        'db_password': db_info['db_password']}
+
+
+
+def vault_authentication(config):
+    """DB authentication method using Vault server."""
+    
+    vault_url = config.get_config("vault_server_url")
 
     app_role_id = os.environ["ROLE_ID"]
 
     # Initialise vault client using TLS
     client = hvac.Client(
-        url="https://vault.grimnet.work:8200",
+        url=vault_url,
         verify=True
     )
 
@@ -93,20 +130,10 @@ def get_db_credentials():
         raise_on_deleted_version=True
     )
 
-    
-    db_info = {
+    return {
         'db_name': secret['data']['data']['db_name'],
         'db_username': secret['data']['data']['db_username'],
         'db_password': secret['data']['data']['db_password']}
-    
-
-    ### Old method for getting creds from environment - could use in future versions
-    #dbname=os.environ['EUCALYPTO_DB_NAME']
-    #user=os.environ['EUCALYPTO_DB_USER']
-    #password=os.environ['EUCALYPTO_DB_PASSWORD']
-
-    return db_info
-
 
 
 if __name__ == '__main__':

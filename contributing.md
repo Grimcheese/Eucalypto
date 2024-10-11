@@ -1,7 +1,7 @@
 # Contributing/Development Rules
 
 The workflow to follow for development is as follows:
-1. Work on new features on dev-<feature name> branch
+1. Work on new features on dev/<feature name> branch
 2. Merge complete features/updates into dev-stage branch to be ran on the dev staging server using pull request
 3. Workflow complete in pre-release phase
 
