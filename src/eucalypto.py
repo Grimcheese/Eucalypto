@@ -47,8 +47,32 @@ def sign_out():
 
 @app.route('/species/')
 def species_page():
-    # TODO get species list
-    return render_template("species_list.html")
+    # TODO get species list and thumbnail
+    plant_list = get_all_species()
+
+    return render_template("species_list.html", plant_list)
+
+
+def get_all_species():
+    """Get all the generic plants for use on species page.
+    
+    Returns: List of all plants named by genus and species stored
+        as generic plants in the database.
+    """
+
+    db_connection = get_db()
+    raw_plant_list = db.query(db_connection,
+        "SELECT genus, species, image_id \
+            FROM generic_plants AS gp, gp_images AS gpi \
+                WHERE gp.g_plant_id=gpi.g_plant_id \
+                    ORDER BY genus ASC, species ASC")
+
+    # Create dictionary of genus species:image_id 
+    plant_dictionary = {}
+    for row in raw_plant_list:
+        plant_dictionary[f"{raw_plant_list[0]} {raw_plant_list[1]}"] = raw_plant_list[2]
+
+    return plant_dictionary
 
 
 @app.route('/species/<genus>/<species>')

@@ -48,11 +48,27 @@ def close(connection):
     connection.close()
 
 
-def query(connection, query, params):
-    """Create and send an SQL query with parameters to database"""
+def query(connection, query, params=None):
+    """Create and send an SQL query with (optional) parameters to database
+    
+    Arguments:
+        connection: The database connected object being accessed.
+        query: String with SQL query
+        params: Any parameters that are to be added to the SQL query. 
+            This argument is optional and has a default value of None.
+    
+    Returns: Any results from the query.
+    """
+    
     cursor = connection.cursor()
     
-    cursor.execute(query, params)
+    if params:
+        cursor.execute(query, params)
+    else:
+        cursor.execute(query)
+
+    # Will raise ProgrammingError if no results
+    # TODO catch the exception on no results
     results = cursor.fetchall()
 
     connection.commit()
@@ -60,6 +76,8 @@ def query(connection, query, params):
 
     return results
     
+
+
 
 """Old db functions, may be redundant with Drone CI/CD system."""
 
