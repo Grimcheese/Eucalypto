@@ -5,4 +5,9 @@
 {% block page_content %}
 <h1>Site Species List</h1>
 <p>The list of all plant species that have been uploaded by users to their spaces</p>
+
+{% for plant_name in plant_list.keys() %}
+<a href="">{% plant_name %}</a>
+{% endfor %}
+
 {% endblock %}

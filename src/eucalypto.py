@@ -69,8 +69,8 @@ def get_all_species():
 
     # Create dictionary of genus species:image_id 
     plant_dictionary = {}
-    for row in raw_plant_list:
-        plant_dictionary[f"{raw_plant_list[0]} {raw_plant_list[1]}"] = raw_plant_list[2]
+    for line in raw_plant_list:
+        plant_dictionary[f"{line[0]} {line[1]}"] = line[2]
 
     return plant_dictionary
 

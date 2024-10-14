@@ -25,6 +25,11 @@ class Config:
         self.configuration = {}
         with open(self.fpath, 'r') as f:
             for line in f.readlines():
+                # Skip empty lines and comments
+                if line == '\n' or line[0] == '#':
+                    continue
+
+                print(line)
                 if line[0] == '#':
                     continue
                 line_parts = line.split("=")
@@ -53,6 +58,22 @@ class Config:
                 raise ValueError(f"Field: {field}, not set in configuration")
     
         return results
+    
 
-    def db_auth():
+    def db_auth(self):
         """Determine db authentication method using config setup."""
+
+        valid_config_values = ["vault", "local"]
+
+        try:
+            auth_method = self.get_config("auth")
+            print(auth_method)
+            if auth_method in valid_config_values:
+                return auth_method
+            else:
+                #TODO raise customer InvalidConfig exception
+                pass
+        except ValueError as e:
+            #TODO raise custom InvalidConfig exception
+            pass
+
