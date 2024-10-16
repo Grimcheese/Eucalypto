@@ -10,7 +10,7 @@ trigger:
       - push
 
 steps:
-- name: Run test on latest changes
+- name: Run test on latest development changes
   pull: always
   image: achawula/eucalypto-build:latest
   commands:
