@@ -25,7 +25,7 @@ def db_connect(config, dbname=None, user=None, password=None):
         
         auth_method = config.db_auth()
 
-        credentials = get_db_credentials(auth_method)
+        credentials = get_db_credentials(config, auth_method)
         db_url = credentials["db_url"]
         db_port = credentials["db_port"]
         dbname = credentials["db_name"]
@@ -99,13 +99,15 @@ def get_db_credentials(config, auth_method):
         return vault_authentication(config)
     elif auth_method == 'local':
         return config_file_authentication(config)
+    else:
+        # TODO Raise DatabaseAuthError
+        raise Exception("No authentication method used")
 
     ### Old method for getting creds from environment - could use in future versions
     #dbname=os.environ['EUCALYPTO_DB_NAME']
     #user=os.environ['EUCALYPTO_DB_USER']
     #password=os.environ['EUCALYPTO_DB_PASSWORD']
 
-    return None
 
 def config_file_authentication(config):
     """Authentication method using the configuration file."""

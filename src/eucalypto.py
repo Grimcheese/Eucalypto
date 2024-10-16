@@ -48,9 +48,14 @@ def sign_out():
 @app.route('/species/')
 def species_page():
     # TODO get species list and thumbnail
-    plant_list = get_all_species()
-
-    return render_template("species_list.html", plant_list)
+    
+    plant_list = None
+    db_error = False
+    try:
+        plant_list = get_all_species()
+    except Exception:
+        db_error = True
+    return render_template("species_list.html", plant_list=plant_list, db_error=db_error)
 
 
 def get_all_species():
