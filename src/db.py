@@ -26,6 +26,8 @@ def db_connect(config, dbname=None, user=None, password=None):
         auth_method = config.db_auth()
 
         credentials = get_db_credentials(auth_method)
+        db_url = credentials["db_url"]
+        db_port = credentials["db_port"]
         dbname = credentials["db_name"]
         user = credentials["db_username"]
         password = credentials["db_password"]
@@ -33,6 +35,8 @@ def db_connect(config, dbname=None, user=None, password=None):
 
     try:    
         connection = psycopg2.connect(
+            host=db_url,
+            port=db_port,
             dbname=dbname,
             user=user,
             password=password
@@ -89,11 +93,11 @@ def load_configuration():
     return conf_data
 
 def get_db_credentials(config, auth_method):
-    """Get database credentials from Vault"""
+    """Get database credentials from authentication method"""
 
     if auth_method == 'vault':
         return vault_authentication(config)
-    elif auth_method == 'config':
+    elif auth_method == 'local':
         return config_file_authentication(config)
 
     ### Old method for getting creds from environment - could use in future versions
@@ -107,12 +111,11 @@ def config_file_authentication(config):
     """Authentication method using the configuration file."""
 
     # Retrieve db url, name, username and password from config file
-    try:
-        db_info = config.get_config("db_url", "db_name", "db_username", "db_password")
-    except ValueError:
-        raise Exception("Unable to get database credentials from config")
+    db_info = config.get_config("db_url", "db_port", "db_name", "db_username", "db_password")
 
     return {
+        'db_url': db_info["db_url"],
+        'db_port': db_info["db_port"],
         'db_name': db_info['db_name'],
         'db_username': db_info['db_username'],
         'db_password': db_info['db_password']}
@@ -141,6 +144,7 @@ def vault_authentication(config):
         print("Vault authentication successful!")
     else:
         print("Unable to autheticate with Vault server")
+        raise Exception("Unable to authenticate with Vault server")
 
     secret = client.secrets.kv.v2.read_secret_version(
         path="/eucalypto/db-info",

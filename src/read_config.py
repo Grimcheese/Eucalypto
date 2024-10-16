@@ -37,7 +37,7 @@ class Config:
 
 
 
-    def get_config(self, fields):
+    def get_config(self, *fields):
         """Get a field from the config file.
 
         Raises a ValueError if searching for field that does not exist
@@ -49,6 +49,9 @@ class Config:
         @returns: The value stored in the config file under the specified field
         """
         
+        #if not isinstance(fields, list):
+        #    raise ValueError("get_config requires a list of fields")
+
         results = {}
         for field in fields:
             if field in self.configuration.keys():
@@ -71,7 +74,7 @@ class Config:
             if auth_method in valid_config_values:
                 return auth_method
             else:
-                #TODO raise customer InvalidConfig exception
+                #TODO raise custom InvalidConfig exception
                 pass
         except ValueError as e:
             #TODO raise custom InvalidConfig exception
