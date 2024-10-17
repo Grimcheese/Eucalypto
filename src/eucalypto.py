@@ -7,6 +7,7 @@ from flask import g
 
 import db
 from read_config import Config
+import psycopg2
 
 app = Flask(__name__)
 app.secret_key = b'temporary_key' # TODO USE VAULT KEY FOR SIGNING
@@ -24,19 +25,31 @@ def home_page():
 
 @app.route('/login/', methods = ['GET', 'POST'])
 def login_page():
+    """Allow the user to login using a standard login form with username and password"""
+
+    # Display login form to users or home page if already logged in
     if request.method == 'GET':
         if session['logged_in']:
             return redirect(url_for('home_page'))
         else:
             return render_template("login.html", login_error=False)
-    if request.method == 'POST':
-        if validate_user_login(request.form['username'], request.form['password']):
-            session['logged_in'] = True
-            return redirect(url_for('home_page'))
-        else:
-            # Print user name/password error
-            return render_template('login.html', login_error=True)
-    
+
+    # Submit user login details and attempt login
+    try:    
+        if request.method == 'POST':
+            if validate_user_login(request.form['username'], request.form['password']):
+                session['logged_in'] = True
+                return redirect(url_for('home_page'))
+            else:
+                # Print user name/password error
+                return render_template('login.html', login_error=True)
+    except psycopg2.OperationalError as e:
+        # Connecting to database failed
+        print("Connecting to database failed")
+        return render_template('error.html', 
+            error_name="Login error",
+            error_message="An error occurred logging in - contact administrator")
+
 
 @app.route('/signout', methods = ['POST'])
 def sign_out():
@@ -47,16 +60,16 @@ def sign_out():
 
 @app.route('/species/')
 def species_page():
-    # TODO get species list and thumbnail
+    """Display the site species list."""
     
-    plant_list = None
-    db_error = False
     try:
         plant_list = get_all_species()
+        return render_template("species_list.html", plant_list=plant_list)
     except Exception:
-        db_error = True
-    return render_template("species_list.html", plant_list=plant_list, db_error=db_error)
-
+        return render_template("error.html", 
+            error_name="Database Error", 
+            error_message="Error getting species list - contact administrator")
+    
 
 def get_all_species():
     """Get all the generic plants for use on species page.
@@ -96,6 +109,9 @@ def generic_plant(genus, species):
 
 @app.route("/spaces/")
 def spaces_page():
+
+    # TODO Get spaces for the user
+    space_ids = get_user_spaces()
     space_ids = [1,2] # Generate urls for each space then pass to template
     space_names = ["Space 1", "The second place"]
     spaces = {}

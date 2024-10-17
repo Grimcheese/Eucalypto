@@ -21,8 +21,8 @@ def db_connect(config, dbname=None, user=None, password=None):
     """
     
     if dbname == None or user == None or password == None:
-        # Get credentials
         
+        # Determine database authentication method using config file
         auth_method = config.db_auth()
 
         credentials = get_db_credentials(config, auth_method)
@@ -33,18 +33,16 @@ def db_connect(config, dbname=None, user=None, password=None):
         password = credentials["db_password"]
         
 
-    try:    
-        connection = psycopg2.connect(
-            host=db_url,
-            port=db_port,
-            dbname=dbname,
-            user=user,
-            password=password
-        )
+    connection = psycopg2.connect(
+        host=db_url,
+        port=db_port,
+        dbname=dbname,
+        user=user,
+        password=password
+    )
 
-        return connection
-    except psycopg2.OperationalError as e:
-        return None
+    return connection
+   
 
 
 def close(connection):
@@ -92,6 +90,7 @@ def load_configuration():
     print(conf_data.keys())
     return conf_data
 
+
 def get_db_credentials(config, auth_method):
     """Get database credentials from authentication method"""
 
@@ -101,7 +100,7 @@ def get_db_credentials(config, auth_method):
         return config_file_authentication(config)
     else:
         # TODO Raise DatabaseAuthError
-        raise Exception("No authentication method used")
+        raise Exception(f"Invalid authentication method: {auth_method}")
 
     ### Old method for getting creds from environment - could use in future versions
     #dbname=os.environ['EUCALYPTO_DB_NAME']
