@@ -39,9 +39,10 @@ def login_page():
         if request.method == 'POST':
             if validate_user_login(request.form['username'], request.form['password']):
                 session['logged_in'] = True
+                session['username'] = request.form['username']
                 return redirect(url_for('home_page'))
             else:
-                # Print user name/password error
+                # Print username/password error
                 return render_template('login.html', login_error=True)
     except psycopg2.OperationalError as e:
         # Connecting to database failed
@@ -111,19 +112,20 @@ def generic_plant(genus, species):
 def spaces_page():
 
     # TODO Get spaces for the user
-    space_ids = get_user_spaces()
-    space_ids = [1,2] # Generate urls for each space then pass to template
-    space_names = ["Space 1", "The second place"]
-    spaces = {}
-    for i in range(len(space_ids)):
-        spaces[space_names[i]] = url_for('user_space', space_id=space_ids[i])
+    spaces = []
+    if 'username' in session:
+        spaces = get_user_spaces(session['username'])
+    else:
+        return render_template('error.html', 
+                               error_name="Not logged in",
+                               error_message="It appears you are not logged in. Log in first to view spaces.")
+        
+    # Generate url for each space using name and id number (1, 0 index from result)
+    space_urls = {}
+    for space in spaces.keys():
+        space_urls[space[1]] = url_for('user_space', space_id=spaces[space[0]])
 
-    return render_template("spaces.html", spaces=spaces)
-
-
-@app.route('/signup')
-def signup_page():
-    return render_template("signup.html")
+    return render_template("spaces.html", spaces=space_urls)
 
 
 @app.route('/spaces/<space_id>')
@@ -143,6 +145,23 @@ def user_space(space_id):
                                error_message="For some reason you cannot view this space. Maybe you aren't logged in, don't have permission or the space does not exist.")
 
 
+def get_user_spaces(username):
+    """Return all the spaces a user has read permission for."""
+
+    db_connection = get_db()
+    results = db_connection.query("SELECT space_id AND name \
+                        FROM space_permissions \
+                        WHERE user_id = (?) AND \
+                        WHERE read IS TRUE", username)
+    
+    return results
+
+
+@app.route('/signup')
+def signup_page():
+    return render_template("signup.html")
+
+
 def validate_user_login(user, password):
     db = get_db()
     
@@ -152,12 +171,12 @@ def validate_user_login(user, password):
         return False
     
 
-
 def get_db():
     if 'db' not in g:
         g.db = db.db_connect(config)
 
     return g.db
+
 
 @app.teardown_appcontext
 def teardown_db(exception):
