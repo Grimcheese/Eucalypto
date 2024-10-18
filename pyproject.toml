@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "eucalypto"
-version = "0.1.1a0"
+version = "0.1.1"
 description = "Self hosted plant database"
 authors = ["Alby Chawula <albychawula@gmail.com>"]
 readme = "README.md"

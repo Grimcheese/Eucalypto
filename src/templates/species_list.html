@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Site Species List{% endblock %}
+
+{% block page_content %}
+<h1>Site Species List</h1>
+
+
+{% if db_error %}
+    <p>Error getting species list - contact administrator</p>
+{% else %}
+    {% for plant_name in plant_list.keys() %}
+    <a href="">{{ plant_name }}</a>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}
