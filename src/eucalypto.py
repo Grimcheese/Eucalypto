@@ -96,6 +96,7 @@ def get_all_species():
 
 @app.route('/species/<genus>/<species>')
 def generic_plant(genus, species):
+    # NOTE Potential for SQL injection here from url variables
     try:
         # Very genus and species is in plant list
 
@@ -125,7 +126,7 @@ def generic_plant(genus, species):
             'common' : results['common'],
             'soil' : results['soil']
         }
-        
+
         return render_template("generic_plant_page.html", plant_info=plant_info)
     except Exception as e:
         print(e)
@@ -136,7 +137,6 @@ def generic_plant(genus, species):
 @app.route("/spaces/")
 def spaces_page():
 
-    # TODO Get spaces for the user
     spaces = []
     if 'username' in session:
         spaces = get_user_spaces(session['username'])
@@ -155,8 +155,8 @@ def spaces_page():
 
 @app.route('/spaces/<space_id>')
 def user_space(space_id):
-    # TODO validate user is logged in and has read access to space
-    if session["logged_in"] == True:
+    # Validate user is logged in and has read access to space
+    if check_space_read_permission(session['username'], space_id):
         # Get space data - name, location, plant list
         space_data = [
             "test_space",
@@ -170,6 +170,19 @@ def user_space(space_id):
                                error_message="For some reason you cannot view this space. Maybe you aren't logged in, don't have permission or the space does not exist.")
 
 
+def check_space_read_permission(username, space_id):
+    """Check if a user has read permission for a space."""
+
+    db_connection = get_db()
+    results = db.query(db_connection,
+                       "SELECT read FROM space_permissions \
+                        WHERE space_id=(?) \
+                        AND user_id=(?)", 
+                        (space_id, username))
+    
+    return results
+
+
 def get_user_spaces(username):
     """Return all the spaces a user has read permission for."""
 
@@ -177,7 +190,7 @@ def get_user_spaces(username):
     results = db_connection.query("SELECT space_id AND name \
                         FROM space_permissions \
                         WHERE user_id = (?) AND \
-                        WHERE read IS TRUE", username)
+                        WHERE read IS TRUE", (username))
     
     return results
 
