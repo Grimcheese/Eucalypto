@@ -96,17 +96,42 @@ def get_all_species():
 
 @app.route('/species/<genus>/<species>')
 def generic_plant(genus, species):
-    # Very genus and species is in plant list
+    try:
+        # Very genus and species is in plant list
 
-    # Get info from genus and species in database
-    plant_info = {
-        'valid' : False,
-        'family' : "test_fam",
-        'genus' : genus,
-        'species' : species
-    }
-    return render_template("generic_plant_page.html", plant_info=plant_info)
+        # Get info from genus and species in database
+        db_connection = get_db()
+        results = db.query(db_connection,
+                        "SELECT family, height, width, habit, flowering_month, common_name, soil_type \
+                        FROM generic_plants AS gp, gp_habits AS gph, gp_flowering_time AS gpf, gp_common_name AS gpc, gp_soil_types AS gps \
+                        WHERE gp.g_plant_id=gph.g_plant_id \
+                        AND gp.g_plant_id=gpf.g_plant_id \
+                        AND gp.g_plant_id=gpc.g_plant_id \
+                        AND gp.g_plant_id=gps.g_plant_id \
+                        AND genus=(?) \
+                        AND species=(?)", 
+                        (genus, species))
 
+        # TODO Move query to function and create dictionary from results
+
+        plant_info = {
+            'family' : results['family'],
+            'genus' : genus,
+            'species' : species,
+            'height' : results['height'],
+            'width' : results['width'],
+            'habit' : results['habit'],
+            'flowering' : results['flowering'],
+            'common' : results['common'],
+            'soil' : results['soil']
+        }
+        
+        return render_template("generic_plant_page.html", plant_info=plant_info)
+    except Exception as e:
+        print(e)
+        return render_template("error.html",
+                               error_name="Loading Error",
+                               error_message=f"An error has occurred while trying to load {genus} {species}")
 
 @app.route("/spaces/")
 def spaces_page():
